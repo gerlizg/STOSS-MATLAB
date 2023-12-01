@@ -1,13 +1,8 @@
-function [Matrix, y_relaxation] = iteration_process (state_vector, x, y, N_ex, final_step, B, part) 
-
-    if (part==1)
-        
-        temp = single(zeros (N_ex, final_step));
-        Matrix = [state_vector, temp];
-    else
-        Matrix = single(zeros (N_ex, final_step));
-    end
-
+function [Matrix, y_relaxation] = iteration_process (state_vector, x, y, N_ex, final_step, B, part, save, time_steps, flag) 
+  
+    temp = single(zeros (N_ex, final_step-1));
+    Matrix = [state_vector, temp];  
+    
 % For each spin:
     
     for i = 1:N_ex
@@ -62,3 +57,37 @@ function [Matrix, y_relaxation] = iteration_process (state_vector, x, y, N_ex, f
     column = sum(Matrix);
     y_relaxation = single(N_ex - column);
     y_relaxation = y_relaxation(1:final_step);
+    
+    if (flag == 2)
+            extension = "_2.csv";
+    else 
+            extension = "_1.csv";
+    end
+     
+    if (save == 1 && time_steps <= 4500)   
+               
+        
+        name = "Matrix" + extension;
+        csvwrite(name, Matrix);
+        %{    
+        varNames = {'TIME (S)','MAGNETIC FIELD (T)','MU (A.U.)'};
+        table_new = table (t, B, y_relaxation, 'VariableNames', varNames);
+        name_table = "Simulation_Results" + extension;
+        xlswrite(name_table, table_new);
+        %}     
+    elseif (save == 1 && time_steps > 4500) 
+        
+        %Matrix_copy_1 = table(Matrix_1);
+        name = "Matrix" + string (part) + extension;
+        csvwrite(name, Matrix);
+                %{     
+        varNames = {'TIME (S)','MAGNETIC FIELD (T)','MU (A.U.)'};
+        table_new = table (t, B, y_relaxation, 'VariableNames', varNames);
+        xlswrite('Simulation_Results'+ extension, table_new);
+        %}
+    end
+    
+    Matrix = Matrix(:,end);
+    temp = 0;
+
+

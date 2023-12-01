@@ -31,6 +31,7 @@ function [B, P_ij, x, y, E, vao] = Bolztmann_distribution (B_max, B_2pbit, g_Dy,
                 % Calculating the field using the cosine function:
                 % Where B = Bmax (amplitude) * cos (time[i]*360/time_steps )
                 B(i) = B_max * cos (((pi/2))+ (i * cycles * 2 * (pi) / time_steps));
+         
                 %B(i) = B_max * cos ((deg2rad(pi/2))+ (i * cycles * 2 * deg2rad(pi) / time_steps));
                 
             else
