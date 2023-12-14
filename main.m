@@ -96,16 +96,7 @@ if (option_2spin == 1)
     disp ('-------------------------------------------------')
     disp ('*************************************************')
     disp ('-------------------------------------------------')
-    disp ('Information about the simulation')
-    disp ('-------------------------------------------------')
-    
-    final = toc;
-    lst_names = {'Compound ID'; 'Spins'; 'Temperature'; 'Relaxation Time'; 'Time step'; 'Steps'; 'Processing time'};
-    units = {'-'; '-'; 'Kelvin'; 'seconds'; 'seconds'; '-'; 'minutes'};
-    lst_values = [sample_ID; N_ex; T; tau_mag; steps; time_steps; final/60];
-    varNames = {'Feature','Units','Value'};
-    Results = table(lst_names, units, lst_values, 'VariableNames', varNames)
-    
+           
 else
     
     x_vector = 0; 
@@ -117,6 +108,15 @@ else
     phi_t = 0;
 
 end
+
+final = toc;
+disp ('Information about the simulation')
+disp ('-------------------------------------------------')
+lst_names = {'Compound ID'; 'Spins'; 'Temperature'; 'Relaxation Time'; 'Time step'; 'Steps'; 'Processing time'};
+units = {'-'; '-'; 'Kelvin'; 'seconds'; 'seconds'; '-'; 'minutes'};
+lst_values = [sample_ID; N_ex; T; tau_mag; steps; time_steps; final/60];
+varNames = {'Feature','Units','Value'};
+Results = table(lst_names, units, lst_values, 'VariableNames', varNames)
 
 plotting (option, N_ex, B_1, B_2, y_relaxation_1, y_relaxation_2, time_vector, option_2spin, T, state_1, state_2, phi_t, flag, save) ;
 

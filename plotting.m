@@ -8,7 +8,7 @@ function plotting (option, N_ex, B_1, B_2, y_relaxation_1, y_relaxation_2, time_
             
             values = [2, 40, 80];
             
-            if (ismember (T, values) && flag == 24)
+            if (ismember (T, values) && flag == 23)
                 filename = string(T) + 'K_exp.csv';
                 table_0 = readtable(filename);
                 x_real = table2array(table_0 (:,1));
@@ -23,7 +23,7 @@ function plotting (option, N_ex, B_1, B_2, y_relaxation_1, y_relaxation_2, time_
                 y_relaxation_1 = (((y - rmin) / (rmax - rmin)) * (tmax-tmin))+ tmin;
                 x = time_vector (1:length(y_relaxation_1));
                 figure
-                plot(x, y_relaxation_1, "x", 'LineWidth', 3);
+                plot(x, y_relaxation_1, "x", 'LineWidth', 2);
                 hold all
                 plot(x_real, y_real, 'LineWidth', 3);
                 grid on
@@ -34,7 +34,7 @@ function plotting (option, N_ex, B_1, B_2, y_relaxation_1, y_relaxation_2, time_
             
             else
                 
-                plot(x, y_relaxation_1, 'Color', teal_color)
+                plot(x, y_relaxation_1, 'Color', teal_color, 'LineWidth', 3)
                 legend ("Experimental")
                 plot_title = string (N_ex) + ' spins at ' + string (T) + 'K (Constant Field: ' + string (B_1(1)) + 'T)';
                 title(plot_title)
@@ -53,7 +53,6 @@ function plotting (option, N_ex, B_1, B_2, y_relaxation_1, y_relaxation_2, time_
             ylim([N_ex*0.4 N_ex*0.6])
             plot(x, y_relaxation_1, 'LineWidth', 3)
             ylabel('mu, (a.u.)')
-            %xlabel('Time, (ms)')
             
             yyaxis right
             ylim([N_ex*0.4 N_ex*0.6])

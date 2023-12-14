@@ -1,4 +1,4 @@
-function [Matrix, y_relaxation] = iteration_process (state_vector, x, y, N_ex, final_step, B, part, save, time_steps, flag) 
+function [Matrix, y_relaxation] = iteration_process (state_vector, x, y, N_ex, final_step, B, part, savee, time_steps, flag) 
   
     temp = single(zeros (N_ex, final_step-1));
     Matrix = [state_vector, temp];  
@@ -59,35 +59,33 @@ function [Matrix, y_relaxation] = iteration_process (state_vector, x, y, N_ex, f
     y_relaxation = y_relaxation(1:final_step);
     
     if (flag == 2)
-            extension = "_2.csv";
+            extension = "_2.mat";
     else 
-            extension = "_1.csv";
+            extension = "_1.mat";
     end
      
-    if (save == 1 && time_steps <= 4500)   
-               
+    if (savee == 1 && time_steps <= 4500)          
         
-        name = "Matrix" + extension;
-        csvwrite(name, Matrix);
-        %{    
-        varNames = {'TIME (S)','MAGNETIC FIELD (T)','MU (A.U.)'};
-        table_new = table (t, B, y_relaxation, 'VariableNames', varNames);
-        name_table = "Simulation_Results" + extension;
-        xlswrite(name_table, table_new);
-        %}     
-    elseif (save == 1 && time_steps > 4500) 
+        name = 'Matrix' + extension;
+        save(name, 'Matrix');
+
+        name = 'y_relaxation' + extension;
+        save(name, 'y_relaxation');
+
+        name = 'B' + extension;
+        save(name, 'B');
         
-        %Matrix_copy_1 = table(Matrix_1);
-        name = "Matrix" + string (part) + extension;
-        csvwrite(name, Matrix);
-                %{     
-        varNames = {'TIME (S)','MAGNETIC FIELD (T)','MU (A.U.)'};
-        table_new = table (t, B, y_relaxation, 'VariableNames', varNames);
-        xlswrite('Simulation_Results'+ extension, table_new);
-        %}
+    elseif (savee == 1 && time_steps > 4500) 
+
+        name = 'y_relaxation_' + string (part) + extension;
+        save(name, 'y_relaxation');
+
+        name = 'B_' + string (part) + extension;
+        save(name, 'B');
+        
     end
     
-    Matrix = Matrix(:,end);
-    temp = 0;
+    %Matrix = Matrix(:,end);
+
 
 
