@@ -24,7 +24,7 @@ function [V_1_1, V_1_0, V_0_1, V_0_0, association_phi] =  td (number, spin_1, sp
             
         end
         
-        N1 = V_1_0+ V_1_1;
+        N1 = V_1_0 + V_1_1;
         N2 = V_0_0 + V_0_1;
         N3 = V_0_0 + V_1_0;
         N4 = V_0_1 + V_1_1;

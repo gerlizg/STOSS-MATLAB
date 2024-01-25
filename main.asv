@@ -1,13 +1,11 @@
 addpath('C:\Users\Principal\Documents\STOSS-MATLAB');
 clear 
 clc
-%------------------
-%   Timer:
-%------------------
 tic
 
 filename = 'user_configurations.xlsx';
 data_vector = readtable(filename);
+
 data = table2array (data_vector(:,2));
 data = data(~isnan(data));
 
@@ -17,7 +15,7 @@ data = data(~isnan(data));
 N_ex = data (1);                                            % Number of Spins of each p-bit
 T = data (2);                                               % Temperature, K
 save = data (3);                                            % 1: for saving results; 0: no
-flag = data (4) - 1;                                        % System to be studied from SIMDAVIS database
+flag = data (4) - 1;                                            % System to be studied from SIMDAVIS database
 starting_mode = data (5);                                   % Starting mode for all spins (0.5 = 50% spins in the lower state of energy)
 time_steps = data (6);                                      % Total time steps
 option = data (7);                                          % 1: changeable field; 0: constant field 
@@ -39,21 +37,37 @@ factor = data (13);                                         % Threshold for the 
 association_factor = data (14);                             % How many delays the program will take into account
 step_association = data (15);                               % How many steps of delay the program will take into account to reach the value of the previous variable
 B_2pbit =(zeros(1,time_steps));
+
 %-----------------------------------------------------------
+
+%------------------
+%   Timer:
+%------------------
+
+tic
 
 %-----------------------------------------------------------
 %   Reading the data set:
 %-----------------------------------------------------------
+
 [Ueff, tau_0, C, n, tau_QTM, g_Dy, sample_ID] = read_data (flag);
+task_1 = toc
 
 %--------------------------------------------------------------------------
 % Relaxation time of magnetization, (s):
 %--------------------------------------------------------------------------
+
+tic
 [steps, tau_mag, probability, total_time, time_vector] = mag_relaxation (Ueff, tau_0, C, n, tau_QTM, T, time_steps);
+task_2 = toc
 
+tic
 [B_1, P_ij_1, x_1, y_1, E_1, vao_1] = Bolztmann_distribution (B_max, B_2pbit, g_Dy, T, time_steps, option, B_constant, cycles, probability);
+task_3 = toc
 
+tic
 [y_relaxation_1, B_2pbit_1, up_1, down_1, difference_1, conditional] = changeable_field (B_2pbit, N_ex, time_steps, B_1, x_1, y_1, starting_mode, B_pbit2, 1, factor, option_2spin, save, time_vector);
+task_4 = toc
 
 disp ('-------------------------------------------------')
 disp ('First p-bit has finished')
@@ -66,25 +80,32 @@ disp ('*************************************************')
 
 if (option_2spin == 1)
     
+    tic
     [B_2, P_ij_2, x_2, y_2, E_2, vao_2] = Bolztmann_distribution (B_max, B_2pbit_1, g_Dy, T, time_steps, 2, B_constant, cycles, probability);
-
+    task_5 = toc
+    
+    tic
     [y_relaxation_2, B_2pbit_2, up_2, down_2, difference_2, conditional] = changeable_field (B_2pbit, N_ex, time_steps, B_2, x_2, y_2, starting_mode, B_pbit2, 2, factor, option_2spin, save, time_vector);
+    task_6 = toc
 
     disp ('-------------------------------------------------')
     disp ('Second p-bit has finished')
     disp ('-------------------------------------------------')
     disp ('*************************************************')
 
+    tic
     state_1 = mean_matrix_state (difference_1, N_ex, time_steps, factor);
     state_2 = mean_matrix_state (difference_2, N_ex, time_steps, factor);
+    task_7 = toc
 
     disp ('-------------------------------------------------')
     disp ('Starting association analysis between both p-bits:')
     disp ('-------------------------------------------------')
     disp ('*************************************************')
 
+    tic
     [V_1_1_t,  V_1_0_t, V_0_1_t, V_0_0_t, phi_t] = association (association_factor, state_1, state_2, step_association);
-
+    task_8 = toc
     disp ('-------------------------------------------------')
     disp ('Association analysis:')
     disp ('-------------------------------------------------')
@@ -103,17 +124,18 @@ else
 
 end
 
-final = toc;
+%final = toc;
 disp ('Information about the simulation')
 disp ('-------------------------------------------------')
 lst_names = {'Compound ID'; 'Spins'; 'Temperature'; 'Relaxation Time'; 'Time step'; 'Steps'; 'Processing time'};
 units = {'-'; '-'; 'Kelvin'; 'seconds'; 'seconds'; '-'; 'minutes'};
-lst_values = [sample_ID; N_ex; T; tau_mag; steps; time_steps; final/60];
+lst_values = [sample_ID; N_ex; T; tau_mag; steps; time_steps; 1/60];
 varNames = {'Feature','Units','Value'};
 Results = table(lst_names, units, lst_values, 'VariableNames', varNames)
 
+tic
 plotting (option, N_ex, B_1, B_2, y_relaxation_1, y_relaxation_2, time_vector, option_2spin, T, state_1, state_2, phi_t, flag, save);
-
+task_9 = toc
 
 
 

@@ -4,8 +4,8 @@ function [B, P_ij, x, y, E, vao] = Bolztmann_distribution (B_max, B_2pbit, g_Dy,
     %   Defining the parameters:
     %--------------------------------------------------------------------
     
-    miu_B = 0.67167;                                             % Bohr magneton                      
-    Mj = 7.5;                                                    % Spin Projection       
+    miu_B = 0.67167;                                   % Bohr magneton                      
+    Mj = 7.5;                                          % Spin Projection       
   
     % Vector that will contain the probability for spin flipping
     vao = single(ones(1, 2));               
@@ -15,9 +15,9 @@ function [B, P_ij, x, y, E, vao] = Bolztmann_distribution (B_max, B_2pbit, g_Dy,
     %   Creating vectors:
     %--------------------------------------------------------------------
     
-    B = single(ones(1,time_steps));                          % Magnetic field
-    x = single(ones(1,time_steps));                           % Probability of changing to state 1
-    y = single(ones(1,time_steps));                         % Probability of changing to state 0
+    B = single(ones(1,time_steps));                     % Magnetic field
+    x = single(ones(1,time_steps));                     % Probability of changing to state 1
+    y = single(ones(1,time_steps));                     % Probability of changing to state 0
       
     if (option ~= 0)  % Changeable field or two pbits network
     
@@ -31,9 +31,7 @@ function [B, P_ij, x, y, E, vao] = Bolztmann_distribution (B_max, B_2pbit, g_Dy,
                 % Calculating the field using the cosine function:
                 % Where B = Bmax (amplitude) * cos (time[i]*360/time_steps )
                 B(i) = B_max * cos (((pi/2))+ (i * cycles * 2 * (pi) / time_steps));
-         
-                %B(i) = B_max * cos ((deg2rad(pi/2))+ (i * cycles * 2 * deg2rad(pi) / time_steps));
-                
+                         
             else
                 
                 % Calculating the field using the result for the pbit1:
@@ -69,13 +67,7 @@ function [B, P_ij, x, y, E, vao] = Bolztmann_distribution (B_max, B_2pbit, g_Dy,
         x = xx * x;
         y = yy * y;
         B = B * B_constant;
-        
-        %for i = 1: time_steps
-            
-         %   [x(i), y(i), B(i)] = [xx, yy, B_constant];
-        
-        %end
-            
+                    
     end
     
 end

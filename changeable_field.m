@@ -1,4 +1,4 @@
-function [y_relaxation, B_2pbit, up, down, difference, conditional] = changeable_field (B_2pbit, N_ex, time_steps, B, x, y, starting_mode, B_pbit2, flag, factor, option_2spin, save, t)
+function [y_relaxation, B_2pbit, up, down, difference, conditional] = changeable_field (B_2pbit, N_ex, time_steps, B, x, y, starting_mode, B_pbit2, flag, factor, option_2spin, save, time_vector)
 
 	%-------------------------------------------------
     %   Defining the parameters:
@@ -9,9 +9,9 @@ function [y_relaxation, B_2pbit, up, down, difference, conditional] = changeable
     %   Creating the lists:
     %-------------------------------------------------
 
-    state_vector = single(zeros (N_ex, 1));                                  % Contains all the states (0, 1)  
-    up = single(zeros (1,time_steps));                                       % Spins in the excited state 
-    down = single(zeros (1,time_steps));                                     % Spins in the ground state 
+    state_vector = single(zeros (N_ex, 1));                % Contains all the states (0, 1)  
+    up = single(zeros (1,time_steps));                     % Spins in the excited state 
+    down = single(zeros (1,time_steps));                   % Spins in the ground state 
     difference = single(zeros (1,time_steps));
        
     %-------------------------------------------------                
@@ -28,12 +28,12 @@ function [y_relaxation, B_2pbit, up, down, difference, conditional] = changeable
     
     if (time_steps <= 4500)
         
-        [Matrix, y_relaxation] = iteration_process (state_vector, x, y, N_ex, time_steps, B, 1, save, time_steps, flag);
+        [Matrix, y_relaxation] = iteration_process (state_vector, x, y, N_ex, time_steps, B, 1, save, time_steps, flag, time_vector);
     else
         final_step = round (time_steps/3);
-        [Matrix_1, y_relaxation_1] = iteration_process (state_vector, x(1:final_step), y(1:final_step), N_ex, final_step, B, 1, save, time_steps, flag);
-        [Matrix_2, y_relaxation_2] = iteration_process (Matrix_1, x(final_step+1:final_step*2), y(final_step+1:final_step*2), N_ex, final_step, B, 2, save, time_steps, flag);
-        [Matrix_3, y_relaxation_3] = iteration_process (Matrix_2, x(final_step*2+1:end), y(final_step*2+1:end), N_ex, final_step, B, 3, save, time_steps, flag);
+        [Matrix_1, y_relaxation_1] = iteration_process (state_vector, x(1:final_step), y(1:final_step), N_ex, final_step, B, 1, save, time_steps, flag, time_vector);
+        [Matrix_2, y_relaxation_2] = iteration_process (Matrix_1(:,end), x(final_step+1:final_step*2), y(final_step+1:final_step*2), N_ex, final_step, B, 2, save, time_steps, flag, time_vector);
+        [Matrix_3, y_relaxation_3] = iteration_process (Matrix_2(:,end), x(final_step*2+1:end), y(final_step*2+1:end), N_ex, final_step, B, 3, save, time_steps, flag, time_vector);
          
         y_relaxation = [y_relaxation_1, y_relaxation_2, y_relaxation_3];
         
@@ -43,8 +43,7 @@ function [y_relaxation, B_2pbit, up, down, difference, conditional] = changeable
     %   Relaxation curve:
     %-------------------------------------------------
         
-    if (option_2spin == 1)
-        
+    if (option_2spin == 1)   
         
         for i= 1:time_steps-1
             down (i) = y_relaxation (i); 

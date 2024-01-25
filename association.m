@@ -23,7 +23,6 @@ function [V_1_1_t,  V_1_0_t, V_0_1_t, V_0_0_t, phi_t] = association (number, sta
         
     end
     
-    
 end
     
     

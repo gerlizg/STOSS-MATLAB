@@ -1,8 +1,8 @@
-function [Matrix, y_relaxation] = iteration_process (state_vector, x, y, N_ex, final_step, B, part, savee, time_steps, flag) 
-  
+function [Matrix, y_relaxation] = iteration_process (state_vector, x, y, N_ex, final_step, B, part, savee, time_steps, flag, time_vector) 
+    
     temp = single(zeros (N_ex, final_step-1));
     Matrix = [state_vector, temp];  
-    
+
 % For each spin:
     
     for i = 1:N_ex
@@ -23,7 +23,7 @@ function [Matrix, y_relaxation] = iteration_process (state_vector, x, y, N_ex, f
                 % Changing the state from 0 to 1:
                 
                 elseif (random_n (j)<y(j) && Matrix(i, j-1) == 0)  
-                    Matrix(i,j) = 1;
+                    Matrix(i,j) = 1; 
                                         
                 else 
                     Matrix(i,j) = Matrix(i, j-1);
@@ -56,36 +56,17 @@ function [Matrix, y_relaxation] = iteration_process (state_vector, x, y, N_ex, f
     
     column = sum(Matrix);
     y_relaxation = single(N_ex - column);
-    y_relaxation = y_relaxation(1:final_step);
-    
-    if (flag == 2)
-            extension = "_2.mat";
-    else 
-            extension = "_1.mat";
+    y_relaxation = y_relaxation(1:final_step);  
+        
+    if (savee == 1)   
+        r_1 = py.results.results(py.numpy.array(Matrix), py.numpy.array(y_relaxation), py.numpy.array(time_vector), py.numpy.array(B), py.numpy.array(flag), py.numpy.array(time_steps), py.numpy.array(part));
     end
-     
-    if (savee == 1 && time_steps <= 4500)          
-        
-        name = 'Matrix' + extension;
-        save(name, 'Matrix');
 
-        name = 'y_relaxation' + extension;
-        save(name, 'y_relaxation');
-
-        name = 'B' + extension;
-        save(name, 'B');
-        
-    elseif (savee == 1 && time_steps > 4500) 
-
-        name = 'y_relaxation_' + string (part) + extension;
-        save(name, 'y_relaxation');
-
-        name = 'B_' + string (part) + extension;
-        save(name, 'B');
-        
+    Matrix = Matrix(:,end);
     end
-    
-    %Matrix = Matrix(:,end);
 
+    
+        
+        
 
 
